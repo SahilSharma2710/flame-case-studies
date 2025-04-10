@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
@@ -32,13 +34,16 @@ class Square extends PositionComponent {
     ..style = PaintingStyle.stroke
     ..strokeWidth = 2;
 
+  // rotationSpeed
+  var rotationSpeed = 0.3;
+
   @override
   //
   // initialize the component
   Future<void> onLoad() async {
     super.onLoad();
     size.setValues(squareSize, squareSize);
-    anchor = Anchor.topRight;
+    anchor = Anchor.center;
   }
 
   @override
@@ -49,6 +54,10 @@ class Square extends PositionComponent {
     super.update(dt);
     // speed is refresh frequency independent
     position += velocity * dt;
+
+    var angleDelta = rotationSpeed * dt;
+
+    angle = (angle + angleDelta) % (2 * pi);
   }
 
   @override
@@ -65,6 +74,10 @@ class Square extends PositionComponent {
 // The game class
 class YourFirst2DGame extends FlameGame with DoubleTapDetector, TapCallbacks {
   bool running = true;
+
+  final TextPaint textPaint = TextPaint(
+    style: TextStyle(fontSize: 24),
+  );
 
   @override
   //
@@ -111,5 +124,12 @@ class YourFirst2DGame extends FlameGame with DoubleTapDetector, TapCallbacks {
     }
 
     running = !running;
+  }
+
+  @override
+  void render(Canvas canvas) {
+    textPaint.render(
+        canvas, 'Active Objects: ${children.length - 3}', Vector2(20, 60));
+    super.render(canvas);
   }
 }
