@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
@@ -8,6 +6,12 @@ import 'package:flame/input.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 
+import 'utils.dart';
+
+/// Solution to case-study #1 exercises #1
+///
+/// The Utils.generateRandomPosition ansd Utils.generateRandomVelocity is the
+/// solution ot exercise #1
 void main() {
   YourFirst2DGame myGame = YourFirst2DGame();
   runApp(
@@ -17,9 +21,8 @@ void main() {
   );
 }
 
-//
-//
-// Simple component shape example of a square component
+/// Simple component shape example of a square component
+///
 class Square extends PositionComponent {
   //
   // default values
@@ -34,16 +37,13 @@ class Square extends PositionComponent {
     ..style = PaintingStyle.stroke
     ..strokeWidth = 2;
 
-  // rotationSpeed
-  var rotationSpeed = 0.3;
-
   @override
   //
   // initialize the component
   Future<void> onLoad() async {
     super.onLoad();
     size.setValues(squareSize, squareSize);
-    anchor = Anchor.center;
+    anchor = Anchor.topRight;
   }
 
   @override
@@ -54,10 +54,6 @@ class Square extends PositionComponent {
     super.update(dt);
     // speed is refresh frequency independent
     position += velocity * dt;
-
-    var angleDelta = rotationSpeed * dt;
-
-    angle = (angle + angleDelta) % (2 * pi);
   }
 
   @override
@@ -69,15 +65,15 @@ class Square extends PositionComponent {
   }
 }
 
-//
-//
-// The game class
+/// The game class
+///
+/// Our main class which drives the Square generation code based on user
+/// tapping on the screen
+///
+/// This is solution code to case-Study #1 - Exercise #1
 class YourFirst2DGame extends FlameGame with DoubleTapDetector, TapCallbacks {
   bool running = true;
-
-  final TextPaint textPaint = TextPaint(
-    style: TextStyle(fontSize: 24),
-  );
+  Vector2 margins = Vector2(15, 15);
 
   @override
   //
@@ -106,9 +102,9 @@ class YourFirst2DGame extends FlameGame with DoubleTapDetector, TapCallbacks {
     // create and add a new shape to the component tree under the FlameGame
     if (!handled) {
       add(Square()
-        ..position = touchPoint
+        ..position = Utils.generateRandomPosition(size, margins)
         ..squareSize = 45.0
-        ..velocity = Vector2(0, 1).normalized() * 50
+        ..velocity = Utils.generateRandomVelocity(size, 25, 100)
         ..color = (BasicPalette.red.paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2));
@@ -124,12 +120,5 @@ class YourFirst2DGame extends FlameGame with DoubleTapDetector, TapCallbacks {
     }
 
     running = !running;
-  }
-
-  @override
-  void render(Canvas canvas) {
-    textPaint.render(
-        canvas, 'Active Objects: ${children.length - 3}', Vector2(20, 60));
-    super.render(canvas);
   }
 }
