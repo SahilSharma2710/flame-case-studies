@@ -3,21 +3,13 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/extensions.dart';
-import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
-import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 
-import 'utils.dart';
+import 'lifebar.dart';
 
-/// Solution to case-study #1 exercises #2 and #3
-///
-/// The Utils.isPositionOutOfBounds is the solution ot exercise #2
-/// The Asteroid class is solution to exercise #3
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  Flame.device.fullScreen();
   YourFirst2DGame myGame = YourFirst2DGame();
   runApp(
     GameWidget(
@@ -26,41 +18,35 @@ void main() {
   );
 }
 
-/// Polygon-based asteroid shape example
-class Asteroid extends PositionComponent with HasGameRef<YourFirst2DGame> {
+//
+//
+// Simple component shape example of a square component
+class Square extends PositionComponent {
   // default values
   //
-
-  /// Vertices for the asteroid
-  final vertices = [
-    Vector2(0.2, 0.8), // v1
-    Vector2(-0.6, 0.6), // v2
-    Vector2(-0.8, 0.2), // v3
-    Vector2(-0.6, -0.4), // v4
-    Vector2(-0.4, -0.8), // v5
-    Vector2(0.0, -1.0), // v6
-    Vector2(0.4, -0.6), // v7
-    Vector2(0.8, -0.8), // v8
-    Vector2(1.0, 0.0), // v9
-    Vector2(0.4, 0.2), // v10
-    Vector2(0.7, 0.6), // v1
-  ];
-
-  late PolygonComponent asteroid;
-
   var velocity = Vector2(0, 25);
   var rotationSpeed = 0.3;
-  var paint = Paint()
-    ..color = Colors.green
+  var squareSize = 128.0;
+  var color = Paint()
+    ..color = Colors.orange
     ..style = PaintingStyle.stroke
-    ..strokeWidth = 1;
+    ..strokeWidth = 2;
+  late LifeBar lifeBar;
+
+  @override
+  Future<void> onLoad() async {
+    super.onLoad();
+    size.setValues(squareSize, squareSize);
+    anchor = Anchor.center;
+    createLifeBar();
+  }
 
   @override
   //
   // render the shape
   void render(Canvas canvas) {
     super.render(canvas);
-    asteroid.render(canvas);
+    canvas.drawRect(size.toRect(), color);
   }
 
   @override
@@ -73,25 +59,24 @@ class Asteroid extends PositionComponent with HasGameRef<YourFirst2DGame> {
     position += velocity * dt;
     // add rotational speed update as well
     var angleDelta = dt * rotationSpeed;
-    angle = (angle - angleDelta) % (2 * pi);
-
-    /// check if the object is out of bounds
-    ///
-    /// if it is out-of-bounds then remove it from the game engine
-    /// note the usage of gameRef to get access to the game engine
-    if (Utils.isPositionOutOfBounds(gameRef.size, position)) {
-      gameRef.remove(this);
-    }
+    angle = (angle + angleDelta) % (2 * pi);
   }
 
-  @override
-  Future<void> onLoad() async {
-    super.onLoad();
-    asteroid = PolygonComponent.relative(vertices, // the vertices
-        parentSize: size, // the actual size of the shape
-        position: position, // the position on the screen
-        paint: paint);
-    anchor = Anchor.center;
+  //
+  //
+  // Create a rudimentary lifebar shape
+  createLifeBar() {
+    lifeBar = LifeBar.initData(size,
+        size: Vector2(size.x - 10, 5), placement: LifeBarPlacement.center);
+    //
+    // add all lifebar element to the children of the Square instance
+    add(lifeBar);
+  }
+
+  /// Method for communicating life state information to the class object
+  ///
+  processHit() {
+    lifeBar.decrementCurrentLifeBy(10);
   }
 }
 
@@ -99,17 +84,26 @@ class Asteroid extends PositionComponent with HasGameRef<YourFirst2DGame> {
 //
 // The game class
 class YourFirst2DGame extends FlameGame with DoubleTapDetector, TapCallbacks {
+  static const description = '''
+        Creation of a square component which is spawned when user taps on the screen.
+        If the user taps on any shape again it will change direction. Shapes go out of the screen but
+        continue to exist in the program and we have a couter of all shapes spawned.
+        Additionally have the square shape moving at constant speed with constant angular momentum.
+        We add a child shape to the square to simulate a health bar. This bar also moves with the 
+        square and with a set opacity.
+      ''';
+
   //
   // controls if the engine is paused or not
   bool running = true;
-  // runnig in debug mode
   @override
+  // runnig in debug mode
   bool debugMode = false;
   //
   // text rendering const
   final TextPaint textPaint = TextPaint(
     style: const TextStyle(
-      fontSize: 16.0,
+      fontSize: 14.0,
       fontFamily: 'Awesome Font',
     ),
   );
@@ -123,11 +117,15 @@ class YourFirst2DGame extends FlameGame with DoubleTapDetector, TapCallbacks {
     final touchPoint = event.canvasPosition;
     print("<user tap> touchpoint: $touchPoint");
 
-    /// handle the tap action
-    ///
-    /// check if the Square object is out of bounds of the screen
+    //
+    // handle the tap action
+    //
+    // check if the tap location is within any of the shapes on the screen
+    // and if so remove the shape from the screen
     final handled = children.any((component) {
-      if (component is Asteroid && component.containsPoint(touchPoint)) {
+      if (component is Square && component.containsPoint(touchPoint)) {
+        // remove(component);
+        component.processHit();
         component.velocity.negate();
         return true;
       }
@@ -138,13 +136,14 @@ class YourFirst2DGame extends FlameGame with DoubleTapDetector, TapCallbacks {
     // this is a clean location with no shapes
     // create and add a new shape to the component tree under the FlameGame
     if (!handled) {
-      add(Asteroid()
+      add(Square()
         ..position = touchPoint
-        ..size = Vector2(100, 100)
+        ..squareSize = 45.0
         ..velocity = Vector2(0, 1).normalized() * 25
-        ..paint = (BasicPalette.white.paint()
+        ..color = (Paint()
+          ..color = Colors.red
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 1));
+          ..strokeWidth = 2));
     }
   }
 
@@ -162,8 +161,7 @@ class YourFirst2DGame extends FlameGame with DoubleTapDetector, TapCallbacks {
   @override
   void render(Canvas canvas) {
     textPaint.render(
-        canvas, "objects active: ${children.length - 3}", Vector2(20, 60));
-
+        canvas, "objects active: ${children.length}", Vector2(10, 20));
     super.render(canvas);
   }
 }
