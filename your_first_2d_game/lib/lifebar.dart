@@ -54,7 +54,7 @@ class LifeBar extends PositionComponent {
   // default threshold separating a healthy bar from danger
   static const int _healthThreshold = 25;
   // default offset of the bar from the edge of the parent in pixels
-  static const double _defaultBarOffset = 2;
+  static const double _defaultBarOffset = 5;
 
   // internal state for the current life
   int _life = _maxLife;

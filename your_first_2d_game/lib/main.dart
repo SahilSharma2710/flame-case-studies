@@ -65,6 +65,9 @@ class Square extends PositionComponent with HasGameRef<YourFirst2DGame> {
     if (Utils.isPositionOutOfBounds(gameRef.size, position)) {
       gameRef.remove(this);
     }
+    if (lifeBar.currentLife <= 0) {
+      gameRef.remove(this);
+    }
   }
 
   //
@@ -72,7 +75,7 @@ class Square extends PositionComponent with HasGameRef<YourFirst2DGame> {
   // Create a rudimentary lifebar shape
   createLifeBar() {
     lifeBar = LifeBar.initData(size,
-        size: Vector2(size.x - 10, 5), placement: LifeBarPlacement.center);
+        size: Vector2(size.x - 10, 10), placement: LifeBarPlacement.center);
     //
     // add all lifebar element to the children of the Square instance
     add(lifeBar);
