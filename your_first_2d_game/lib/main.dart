@@ -6,6 +6,7 @@ import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
+import 'package:your_first_2d_game/utils.dart';
 
 import 'lifebar.dart';
 
@@ -21,7 +22,7 @@ void main() {
 //
 //
 // Simple component shape example of a square component
-class Square extends PositionComponent {
+class Square extends PositionComponent with HasGameRef<YourFirst2DGame> {
   // default values
   //
   var velocity = Vector2(0, 25);
@@ -60,6 +61,10 @@ class Square extends PositionComponent {
     // add rotational speed update as well
     var angleDelta = dt * rotationSpeed;
     angle = (angle + angleDelta) % (2 * pi);
+
+    if (Utils.isPositionOutOfBounds(gameRef.size, position)) {
+      gameRef.remove(this);
+    }
   }
 
   //
@@ -76,7 +81,7 @@ class Square extends PositionComponent {
   /// Method for communicating life state information to the class object
   ///
   processHit() {
-    lifeBar.decrementCurrentLifeBy(10);
+    lifeBar.decrementCurrentLifeBy(20);
   }
 }
 
@@ -138,8 +143,8 @@ class YourFirst2DGame extends FlameGame with DoubleTapDetector, TapCallbacks {
     if (!handled) {
       add(Square()
         ..position = touchPoint
-        ..squareSize = 45.0
-        ..velocity = Vector2(0, 1).normalized() * 25
+        ..squareSize = 75.0
+        ..velocity = Vector2(0, 1).normalized() * 50
         ..color = (Paint()
           ..color = Colors.red
           ..style = PaintingStyle.stroke
@@ -161,7 +166,7 @@ class YourFirst2DGame extends FlameGame with DoubleTapDetector, TapCallbacks {
   @override
   void render(Canvas canvas) {
     textPaint.render(
-        canvas, "objects active: ${children.length}", Vector2(10, 20));
+        canvas, "objects active: ${children.length - 3}", Vector2(10, 20));
     super.render(canvas);
   }
 }
