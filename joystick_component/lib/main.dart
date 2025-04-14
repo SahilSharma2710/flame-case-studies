@@ -58,7 +58,7 @@ class JoystickExample extends FlameGame with TapCallbacks {
   void update(double dt) {
     //
     //  show the angle of the player
-    print("current player angle: ${player.angle}");
+    print("current children: ${children.length - 3}");
     super.update(dt);
   }
 
@@ -75,7 +75,7 @@ class JoystickExample extends FlameGame with TapCallbacks {
     // rotate this vector to the same ange as the player
     velocity.rotate(player.angle);
     // create a bullet with the specific angle and add it to the game
-    add(Bullet(player.position, velocity));
+    add(Bullet(player.position, velocity, size));
     super.onTapUp(event);
   }
 }
