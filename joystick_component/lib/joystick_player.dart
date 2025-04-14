@@ -13,9 +13,8 @@ class JoystickPlayer extends SpriteComponent with HasGameRef {
   JoystickPlayer(this.joystick)
       : super(
           size: Vector2.all(50.0),
-        ) {
-    anchor = Anchor.center;
-  }
+          anchor: Anchor.center,
+        );
 
   @override
   Future<void> onLoad() async {
@@ -33,8 +32,6 @@ class JoystickPlayer extends SpriteComponent with HasGameRef {
     //
     // if the joystick has moved
     if (!joystick.delta.isZero()) {
-      print("joystick.relativeDelta: ${joystick.relativeDelta}");
-      print("joystick.delta: ${joystick.delta}");
       position.add(joystick.relativeDelta * maxSpeed * dt);
       angle = joystick.delta.screenAngle();
     }

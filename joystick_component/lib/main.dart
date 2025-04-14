@@ -1,8 +1,10 @@
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'bullet.dart';
 import 'joystick_player.dart';
 
 main() {
@@ -12,11 +14,12 @@ main() {
   );
 }
 
-class JoystickExample extends FlameGame {
+class JoystickExample extends FlameGame with TapCallbacks {
   static const String description = '''
-    In this example we showcase how to use the joystick by creating two simple
-    `CircleComponent` instances that serve as the joystick's knob and 
-    background. Steer the player by using the joystick.
+    In this example we showcase how to use the joystick by creating simple
+    `CircleComponent`s that serve as the joystick's knob and background.
+    Steer the player by using the joystick. We also show how to shoot bullets
+    and how to find the angle of the bullet path relative to the ship's angle
   ''';
 
   //
@@ -31,16 +34,16 @@ class JoystickExample extends FlameGame {
     await super.onLoad();
     //
     // joystick knob and background skin styles
-    final knobPaint = BasicPalette.gray.withAlpha(200).paint();
+    final knobPaint = BasicPalette.gray.withAlpha(500).paint();
     final backgroundPaint = BasicPalette.cyan.withAlpha(50).paint();
     //
     // Actual Joystick component creation
     joystick = JoystickComponent(
       knob: CircleComponent(radius: 15, paint: knobPaint),
       background: CircleComponent(radius: 50, paint: backgroundPaint),
-      // screen position margin
       margin: const EdgeInsets.only(left: 20, bottom: 20),
     );
+
     //
     // adding the player that will be controlled by our joystick
     player = JoystickPlayer(joystick);
@@ -57,5 +60,22 @@ class JoystickExample extends FlameGame {
     //  show the angle of the player
     print("current player angle: ${player.angle}");
     super.update(dt);
+  }
+
+  @override
+  //
+  //
+  // We will handle the tap action by the user to shoot a bullet
+  // each time the user taps and lifts their finger
+  void onTapUp(TapUpEvent event) {
+    //
+    // velocity vector pointing straight up.
+    // Represents 0 radians which is 0 desgrees
+    var velocity = Vector2(0, -1);
+    // rotate this vector to the same ange as the player
+    velocity.rotate(player.angle);
+    // create a bullet with the specific angle and add it to the game
+    add(Bullet(player.position, velocity));
+    super.onTapUp(event);
   }
 }
