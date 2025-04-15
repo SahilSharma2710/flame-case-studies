@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/palette.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'bullet.dart';
@@ -52,6 +53,7 @@ class JoystickExample extends FlameGame with TapCallbacks {
     // add both joystick and the controlled player to the game instance
     add(player);
     add(joystick);
+    // addBackgroundMusic();
   }
 
   @override
@@ -77,5 +79,10 @@ class JoystickExample extends FlameGame with TapCallbacks {
     // create a bullet with the specific angle and add it to the game
     add(Bullet(player.position, velocity, size));
     super.onTapUp(event);
+  }
+
+  void addBackgroundMusic() {
+    FlameAudio.bgm.initialize();
+    FlameAudio.bgm.play('race_to_mars.mp3');
   }
 }
