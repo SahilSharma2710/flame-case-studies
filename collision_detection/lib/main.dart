@@ -27,7 +27,7 @@ main() {
 /// boundaries
 class Circles extends FlameGame with HasCollisionDetection, TapCallbacks {
   @override
-  bool debugMode = true;
+  bool debugMode = false;
 
   @override
   Future<void> onLoad() async {
@@ -53,7 +53,7 @@ class MyCollidable extends CircleComponent
   Color _currentColor = Colors.cyan;
   bool _isWallHit = false;
   bool _isCollision = false;
-  final double _speed = 20;
+  final double _speed = 200;
 
   /// direction vector split into constituetn x and y elements
   /// we start with the vector (1, 1) which is pointing down
@@ -136,5 +136,16 @@ class MyCollidable extends CircleComponent
     if (other is MyCollidable) {
       _isCollision = true;
     }
+  }
+
+  @override
+  void onCollisionStart(
+      Set<Vector2> intersectionPoints, PositionComponent other) {
+    if (other is MyCollidable) {
+      xDirection = xDirection * -1;
+      yDirection = yDirection * -1;
+    }
+
+    super.onCollisionStart(intersectionPoints, other);
   }
 }
