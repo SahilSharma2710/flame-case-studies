@@ -4,8 +4,9 @@ A comprehensive Flutter Flame example demonstrating various collision detection 
 
 | Version 1.0 | Version 2.0 | Version 3.0 |
 |:-----------:|:-----------:|:-----------:|
-| ![Basic Collision](https://github.com/user-attachments/assets/01ab4ef8-2cfd-498c-8e99-c997149f6c33) | ![Color Transfer](https://github.com/user-attachments/assets/059beebd-9858-4c42-b119-80fd825218dd) | ![Rock Paper Scissors](your_new_gif_url_here) |
-| Basic Collisions | Color Transfer | Rock Paper Scissors Battle |
+| ![Basic Collision](https://github.com/user-attachments/assets/01ab4ef8-2cfd-498c-8e99-c997149f6c33) | ![Color Transfer](https://github.com/user-attachments/assets/059beebd-9858-4c42-b119-80fd825218dd) | ![Rock Paper Scissors](https://github.com/user-attachments/assets/f2775453-8ce5-4127-a633-9ddf31c619f0)
+) |
+| Basic Collisions | Color Transfer | Rock Paper Scissors |
 
 ## 📚 Learning Objectives
 
