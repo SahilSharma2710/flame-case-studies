@@ -2,6 +2,11 @@
 
 A comprehensive Flutter Flame example demonstrating various collision detection techniques and game mechanics. This project serves as a learning resource for game development with Flutter and Flame engine.
 
+| Version 1.0 | Version 2.0 |
+|:-----------:|:-----------:|
+| ![Basic Collision](https://github.com/user-attachments/assets/01ab4ef8-2cfd-498c-8e99-c997149f6c33) | ![Color Transfer](https://github.com/user-attachments/assets/059beebd-9858-4c42-b119-80fd825218dd) |
+
+
 ## 📚 Learning Objectives
 
 - Understanding collision detection in Flame
