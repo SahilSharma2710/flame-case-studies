@@ -1,5 +1,6 @@
 import 'package:collision_detection/version1.dart';
 import 'package:collision_detection/version2.dart';
+import 'package:collision_detection/v3_rock_paper_scissors.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart' hide Image, Draggable;
 
@@ -10,9 +11,10 @@ sequence and transfer their colors on collision.
 ''';
 
 void main() {
-  final bool useVersion2 = false;
+  final myGame = RPSGame();
+  // final myGame = CirclesV2();
+  // final myGame = CirclesV1();
 
-  final myGame = useVersion2 ? CirclesV2() : CirclesV1();
   runApp(
     GameWidget(
       game: myGame,
