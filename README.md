@@ -17,6 +17,7 @@ The goal of this repository is to:
 | 1 | 🎮 Your First 2D Game | A simple interactive game where you can create and control squares with health bars | Game loop, component creation, tap detection, health system, rotation mechanics |
 | 2 | 🕹️ Joystick Component | A spaceship control demo with joystick movement and shooting mechanics | Joystick controls, player movement, projectile system, audio integration |
 | 3 | 💥 Collision Detection | An interactive demo where circles bounce off walls and each other | Collision detection, vector math, component interaction, screen boundaries |
+| 4 | ⏱️ Timers and Collisions | Circles bouncing off walls and each other, losing 'life' over time/collisions | Timers (implicit), Collision Detection, Component Lifecycle, Basic Physics, Sound Effects |
 
 ## 🎯 Project Details
 
