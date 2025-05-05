@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/palette.dart';
+import 'package:flame/parallax.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -30,9 +31,20 @@ class JoystickExample extends FlameGame with TapCallbacks {
   // The actual Joystick component
   late final JoystickComponent joystick;
 
+  final _imageNames = [
+    ParallaxImageData('small_stars.png'),
+    ParallaxImageData('big_stars.png'),
+  ];
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+
+    final parallax = await loadParallaxComponent(_imageNames,
+        baseVelocity: Vector2(0, -10),
+        velocityMultiplierDelta: Vector2(1.0, 1.8),
+        repeat: ImageRepeat.repeat);
+    add(parallax);
     //
     // joystick knob and background skin styles
     final knobPaint = BasicPalette.gray.withAlpha(500).paint();
@@ -53,7 +65,7 @@ class JoystickExample extends FlameGame with TapCallbacks {
     // add both joystick and the controlled player to the game instance
     add(player);
     add(joystick);
-    // addBackgroundMusic();
+    addBackgroundMusic();
   }
 
   @override
